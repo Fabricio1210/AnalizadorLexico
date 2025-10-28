@@ -3,7 +3,6 @@ def main():
     numbers = "0123456789"
     hexadecimal = "0123456789abcdef"
     letters = "abcdefghijklmnopqrstuvwxyz"
-    reserved_words = ["if"]
     s = input("Ingresa tu cadena: ")
     result = []
     term = ''
@@ -91,18 +90,23 @@ def main():
             else:
                 result.append('q10')
                 token = "Entero"        
-
-        # Identificadores/Strings
+        
+        # Identificadores / Palabras reservadas
         elif s[i] in letters:
-            while i < len(s) and (s[i] in letters or s[i] in numbers or s[i] in "$_"):
-                term += s[i]
-                result.append("q14")
-                i += 1
-            result.append("q15")
-            if term in reserved_words:
-                token = "String"
+            # "if"
+            if s[i:i+2] == "if":
+                term += "if"
+                result.extend(["q11", "q12", "q13"])
+                i += 2
+                token = "Palabra_reservada"
             else:
-                token = "Identificador" 
+                # Identificadores
+                while i < len(s) and (s[i] in letters or s[i] in numbers or s[i] in "$_"):
+                    term += s[i]
+                    result.append("q14")
+                    i += 1
+                result.append("q15")
+                token = "Identificador"
         
         # Operadores (=, ==)
         elif s[i] == "=":
@@ -123,7 +127,7 @@ def main():
 
 
         # Impresion final            
-        print("<" + token + " , " + term + " ,", ','.join(result) + ">")
+        print("<" + token + ", " + term + ", " + ','.join(result) + ">")
         token = ""
         term = ""
         result = []
