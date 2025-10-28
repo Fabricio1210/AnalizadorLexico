@@ -1,14 +1,13 @@
 def main():
     delimiter = "();"
     numbers = "0123456789"
-    hexadecimal = "0123456789abcdef"
-    letters = "abcdefghijklmnopqrstuvwxyz"
+    hexadecimal = "0123456789ABCDEF"
+    letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     s = input("Ingresa tu cadena: ")
     result = []
     term = ''
     token = ''
     i = 0
-    s = s.lower()
     
     while (1):
         
@@ -90,9 +89,9 @@ def main():
             else:
                 result.append('q10')
                 token = "Entero"        
-        
+
         # Identificadores / Palabras reservadas
-        elif s[i] in letters:
+        elif s[i] in letters or s[i] in "$_":
             # "if"
             if s[i:i+2] == "if":
                 term += "if"
@@ -108,6 +107,22 @@ def main():
                 result.append("q15")
                 token = "Identificador"
         
+
+        # Operadores(+, ++)
+        elif s[i] == "+":
+            term += s[i]
+            result.append("q17")
+            i += 1
+            if i < len(s) and s[i] == "+":
+                term += s[i]
+                result.append("q18")
+                token = "incremento"
+                i += 1
+            else:
+                result.append("q20")
+                token = "suma"
+
+
         # Operadores (=, ==)
         elif s[i] == "=":
             term += s[i]
@@ -124,7 +139,6 @@ def main():
         else:
             print(f"Error: símbolo no reconocido '{s[i]}' en q0")
             break        
-
 
         # Impresion final            
         print("<" + token + ", " + term + ", " + ','.join(result) + ">")
