@@ -1,20 +1,36 @@
 def main():
     delimiter = "();"
     numbers = "0123456789"
-    hexadecimal = "0123456789abcdf"
+    hexadecimal = "0123456789abcdef"
+    letters = "abcdefghijklmnopqrstuvwxyz"
+    reserved_words = ["if"]
     s = input("Ingresa tu cadena: ")
     result = []
     term = ''
     token = ''
     i = 0
     s = s.lower()
-    while(1):
+    
+    while (1):
+        
         result.append('q0')
-        if s[i] in delimiter:
+        
+        # Espacio(s)
+        if s[i].isspace():
+            term += s[i]
+            result.append("q19")
+            result.append("q16")
+            token = "Espacio"
+            i += 1
+        
+        # Delimitador
+        elif s[i] in delimiter:
             token = "Delimitador"
             term += s[i]
             result.append('q27')
             i+=1
+        
+        # Hexadecimal/Flotante/Entero
         elif s[i] == '0':
             term += s[i]
             result.append('q1')
@@ -32,7 +48,8 @@ def main():
                     token = "Hexadecimal"
                 else:
                     print("Error numero hexadecimal incompleto, formato no valido")
-                    break;
+                    break
+            
             elif i < len(s) and s[i] == ".":
                 term += s[i]
                 result.append('q7')
@@ -46,10 +63,12 @@ def main():
                     token = "Flotante"
                 else:
                     print("Error numero flotante incompleto, formato no valido")
-                    break;
+                    break
             else:
                 result.append('q2')
                 token = "Entero"
+        
+        # Entero/Flotante
         elif s[i] in numbers:
             while i < len(s) and s[i] in numbers:
                 result.append('q6')
@@ -68,16 +87,49 @@ def main():
                     token = "Flotante"
                 else:
                     print("Error numero flotante incompleto, formato no valido")
-                    break;
+                    break
             else:
                 result.append('q10')
-                token = "Entero"
+                token = "Entero"        
+
+        # Identificadores/Strings
+        elif s[i] in letters:
+            while i < len(s) and (s[i] in letters or s[i] in numbers or s[i] in "$_"):
+                term += s[i]
+                result.append("q14")
+                i += 1
+            result.append("q15")
+            if term in reserved_words:
+                token = "String"
+            else:
+                token = "Identificador" 
+        
+        # Operadores (=, ==)
+        elif s[i] == "=":
+            term += s[i]
+            result.append("q22")
+            i += 1
+            if i < len(s) and s[i] == "=":
+                term += s[i]
+                result.append("q26")
+                token = "Igual"
+                i += 1
+            else:
+                result.append("q25")
+                token = "Asignación"
+        else:
+            print(f"Error: símbolo no reconocido '{s[i]}' en q0")
+            break        
+
+
+        # Impresion final            
         print("<" + token + " , " + term + " ,", ','.join(result) + ">")
         token = ""
         term = ""
         result = []
         if i >= len(s):
-            break; 
+            break
+
 
 if __name__ == "__main__":
     main()
