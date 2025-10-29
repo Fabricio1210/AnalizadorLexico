@@ -133,6 +133,9 @@ def main():
                 result.append("q26")
                 token = "Igual"
                 i += 1
+                if s[i] == "=":
+                    print("Error [===] no valido")
+                    break
             else:
                 result.append("q25")
                 token = "Asignación"
